@@ -1,7 +1,9 @@
+let env = require('dotenv').config()
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'snippets-client',
+    titleTemplate: '%s - Snippets',
     htmlAttrs: {
       lang: 'en'
     },
@@ -37,10 +39,44 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
+  axios: {
+    baseURL: env.parsed.API_URL
+  },
+
+  auth: {
+    strategies: {
+      local: {
+        token: {
+          property: 'data.token',
+          global: true,
+          // required: true,
+          type: 'Bearer'
+        },
+        user: {
+          property: 'data',
+          // autoFetch: true
+        },
+        endpoints: {
+          login: {
+            url: 'auth/signin',
+            method: 'post',
+          },
+          user: {
+            url: 'auth/me',
+            method: 'get',
+          },
+          logout: {
+            url: 'auth/signout',
+            method: 'post',
+          }
+        }
+      }
+    }
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

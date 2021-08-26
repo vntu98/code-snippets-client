@@ -44,31 +44,36 @@
                 </ul>
 
                 <ul class="lg:h-24 lg:flex items-center ml-auto text-right w-full lg:w-auto">
-                    <li>
-                        <nuxt-link :to="{ name: 'home' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
-                            Dashboard
-                        </nuxt-link>
-                    </li>
-                    <li>
-                        <nuxt-link :to="{ name: 'home' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
-                            Vu Tu
-                        </nuxt-link>
-                    </li>
-                    <li>
-                        <nuxt-link :to="{ name: 'home' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
-                            Sign in
-                        </nuxt-link>
-                    </li>
-                    <li>
-                        <nuxt-link :to="{ name: 'home' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
-                            Create an account
-                        </nuxt-link>
-                    </li>
-                    <li>
-                        <nuxt-link :to="{ name: 'home' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
-                            Sign out
-                        </nuxt-link>
-                    </li>
+                    <template v-if="$auth.loggedIn">
+                        <li>
+                            <nuxt-link :to="{ name: 'dashboard' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
+                                Dashboard
+                            </nuxt-link>
+                        </li>
+                        <li>
+                            <nuxt-link :to="{ name: 'home' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
+                                {{ $auth.user.name }}
+                            </nuxt-link>
+                        </li>
+                        <li>
+                            <a href="#" @click.prevent="signOut" class="text-lg text-gray-700 lg:py-8 lg:px-4">
+                                Sign out
+                            </a>
+                        </li>
+                    </template>
+
+                    <template v-else>
+                        <li>
+                            <nuxt-link :to="{ name: 'auth-signin' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
+                                Sign in
+                            </nuxt-link>
+                        </li>
+                        <li>
+                            <nuxt-link :to="{ name: 'home' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
+                                Create an account
+                            </nuxt-link>
+                        </li>
+                    </template>
                 </ul>
             </div>
         </div>
@@ -80,6 +85,12 @@ export default {
     data() {
         return {
             mobileNavOpen: false
+        }
+    },
+
+    methods: {
+        async signOut() {
+            await this.$auth.logout()
         }
     },
 }

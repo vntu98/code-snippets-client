@@ -7,7 +7,12 @@
 
 <script>
 export default {
-
+  head() {
+    return {
+      title: 'Snippets',
+      titleTemplate: null,
+    }
+  }
 }
 </script>
 
