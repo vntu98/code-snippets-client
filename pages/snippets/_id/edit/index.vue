@@ -8,6 +8,7 @@
                         class="text-4xl text-gray-700 font-medium font-header leading-tight mb-4 w-full block p-2 border-2 rounded border-dashed border-gray-400 outline-none"
                         value=""
                         placeholder="Untitled snippet"
+                        v-model="snippet.title"
                     >
 
                     <div class="text-gray-600">
@@ -22,52 +23,63 @@
 
         <div class="container">
             <div class="flex items-center mb-6">
-                <div class="text-xl text-gray-600 font-medium mr-3">
-                    1/5.
+                <div class="text-xl text-gray-600 font-header font-medium mr-3">
+                    {{ currentStepIndex + 1 }}/{{ steps.length }}.
                 </div>
 
                 <input
                     type="text"
-                    class="text-xl text-gray-600 font-medium bg-transparent p-2 border-2 rounded border-dashed border-gray-400 outline-none w-full"
+                    class="text-xl text-gray-600 font-medium bg-transparent font-header p-2 border-2 rounded border-dashed border-gray-400 outline-none w-full"
                     value="Untitled step"
+                    v-model="currentStep.title"
                 >
             </div>
 
             <div class="flex flex-wrap lg:flex-nowrap">
                 <div class="w-full lg:w-8/12 lg:mr-16 flex flex-wrap lg:flex-nowrap justify-between items-start mb-8">
                     <div class="flex flex-row lg:flex-col mr-2 order-first">
-                        <nuxt-link to="{}" class="block mb-2 p-3 bg-blue-500 rounded-lg mr-2 lg:mr-0" title="Previous step">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
-                        </nuxt-link>
+                        <step-navigation-button :step="previousStep">
+                            <template>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                            </template>
+                        </step-navigation-button>
 
-                        <nuxt-link to="{}" class="block mb-2 p-3 bg-blue-500 rounded-lg" title="Add step before">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                            </svg>
-                        </nuxt-link>
+                        <add-step-button
+                            position="before"
+                            :snippet="snippet"
+                            :currentStep="currentStep"
+                            @added="handleStepAdded"
+                        />
                     </div>
 
                     <div class="w-full lg:mr-2">
-                        <textarea class="w-full mb-6 border-dashed border-2 border-gray-400 rounded-lg outline-none"></textarea>
+                        <textarea
+                            class="w-full mb-6 border-dashed border-2 border-gray-400 rounded-lg outline-none"
+                            v-model="currentStep.body"
+                        ></textarea>
+
                         <div class="bg-white p-8 rounded-lg text-gray-600 w-full mr-2">
                             Markdown content
                         </div>
                     </div>
 
                     <div class="flex flex-row-reverse lg:flex-col order-first lg:order-last">
-                        <nuxt-link to="{}" class="block mb-2 p-3 bg-blue-500 rounded-lg mr-2 lg:mr-0" title="Next step">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </nuxt-link>
+                        <step-navigation-button :step="nextStep">
+                            <template>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </template>
+                        </step-navigation-button>
 
-                        <nuxt-link to="{}" class="block mb-2 p-3 bg-blue-500 rounded-lg mr-2 lg:mr-0" title="Add step after">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                            </svg>
-                        </nuxt-link>
+                        <add-step-button 
+                            position="after"
+                            :snippet="snippet"
+                            :currentStep="currentStep"
+                            @added="handleStepAdded"
+                        />
 
                         <nuxt-link to="{}" class="block mb-2 p-3 bg-blue-500 rounded-lg order-first lg:order-last" title="Delete step">
                             <svg xmlns="http://www.w3.org/2000/svg" class="fill-current text-white h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -83,13 +95,7 @@
                             Steps
                         </h1>
 
-                        <ul>
-                            <li class="mb-1" v-for="(step, index) in 5" :key="index">
-                                <nuxt-link to="{}" :class="{ 'font-bold': index === 0 }">
-                                    {{ index + 1 }}. Step title
-                                </nuxt-link>
-                            </li>
-                        </ul>
+                        <step-list :steps="orderdStepAsc" :currentStep="currentStep" />
                     </div>
 
                     <div class="text-gray-500 text-sm">
@@ -104,3 +110,79 @@
         </div>
     </div>
 </template>
+
+<script>
+import { debounce as _debounce } from 'lodash'
+import StepList from '../components/StepList.vue'
+import StepNavigationButton from '../components/StepNavigationButton.vue'
+import browseSnippet from '@/mixins/snippets/browseSnippet'
+import AddStepButton from './components/AddStepButton.vue'
+
+export default {
+    components: {
+        StepList,
+        StepNavigationButton,
+        AddStepButton
+    },
+
+    data() {
+        return {
+            snippet: null,
+            steps: []
+        }
+    },
+
+    mixins: [
+        browseSnippet
+    ],
+
+    head() {
+        return {
+            title: `Editing ${this.snippet.title || 'Untitled snippet'}`
+        }
+    },
+
+    watch: {
+        'snippet.title': {
+            handler: _debounce(async function (title) {
+                await this.$axios.$patch(`snippets/${this.snippet.uuid}`, { title })
+            }, 500)
+        },
+
+        currentStep: {
+            deep: true,
+
+            handler: _debounce(async function (step) {
+                await this.$axios.$patch(`snippets/${this.snippet.uuid}/steps/${step.uuid}`, {
+                    title: step.title,
+                    body: step.body
+                })
+            }, 500)
+        }
+    },
+
+    methods: {
+        goToStep(step) {
+            this.$router.push({
+                query: {
+                    step: step.uuid
+                }
+            })
+        },
+
+        handleStepAdded(step) {
+            this.steps.push(step)
+            this.goToStep(step)
+        }
+    },
+
+    async asyncData({ app, params }) {
+        let snippet = await app.$axios.$get(`snippets/${params.id}`)
+
+        return {
+            snippet: snippet.data,
+            steps: snippet.data.steps.data
+        }
+    }
+}
+</script>
