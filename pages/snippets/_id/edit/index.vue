@@ -55,14 +55,9 @@
                     </div>
 
                     <div class="w-full lg:mr-2">
-                        <textarea
-                            class="w-full mb-6 border-dashed border-2 border-gray-400 rounded-lg outline-none"
-                            v-model="currentStep.body"
-                        ></textarea>
-
-                        <div class="bg-white p-8 rounded-lg text-gray-600 w-full mr-2">
-                            Markdown content
-                        </div>
+                        <step-editor
+                            :step="currentStep"
+                        />
                     </div>
 
                     <div class="flex flex-row-reverse lg:flex-col order-first lg:order-last">
@@ -155,13 +150,15 @@ import browseSnippet from '@/mixins/snippets/browseSnippet'
 import AddStepButton from './components/AddStepButton.vue'
 import DeleteStepButton from './components/DeleteStepButton.vue'
 import moment from 'moment'
+import StepEditor from './components/StepEditor.vue'
 
 export default {
     components: {
         StepList,
         StepNavigationButton,
         AddStepButton,
-        DeleteStepButton
+        DeleteStepButton,
+        StepEditor
     },
 
     data() {
@@ -224,14 +221,6 @@ export default {
     methods: {
         touchLastSaved() {
             this.lastSaved = moment.now()
-        },
-
-        goToStep(step) {
-            this.$router.push({
-                query: {
-                    step: step.uuid
-                }
-            })
         },
 
         handleStepAdded(step) {

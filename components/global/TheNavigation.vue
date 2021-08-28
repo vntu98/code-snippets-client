@@ -2,7 +2,7 @@
     <div class="bg-white py-8 lg:py-0 flex items center">
         <div class="container flex flex-wrap items-center lg:flex-no-wrap">
             <nuxt-link
-                :to="{ name: 'index' }"
+                :to="{ name: 'dashboard' }"
                 class="mr-10 flex-shrink-0"
             >
                 <img src="" alt="Logo" class="h-8">
@@ -32,7 +32,7 @@
             <div class="w-full flex" :class="{ 'mt-8': mobileNavOpen, 'hidden lg:flex': !mobileNavOpen }">
                 <ul class="lg:h-24 lg:flex items-center w-full lg:w-auto">
                     <li>
-                        <nuxt-link :to="{ name: 'home' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
+                        <nuxt-link :to="{ name: 'browse' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
                             Browse
                         </nuxt-link>
                     </li>

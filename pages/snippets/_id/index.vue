@@ -35,7 +35,9 @@
                     </div>
 
                     <div class="bg-white p-8 rounded-lg text-gray-600 w-full ml-2 mr-2">
-                        {{ currentStep.body }}
+                        <step-markdown
+                            :value="currentStep.body"
+                        />
                     </div>
 
                     <div class="flex flex-row lg:flex-col order-first lg:order-last">
@@ -48,6 +50,7 @@
                         </step-navigation-button>
 
                         <nuxt-link
+                            v-if="snippet.user.data.owner"
                             :to="{
                                 name: 'snippets-id-edit',
                                 params: {
@@ -94,11 +97,13 @@
 import StepList from './components/StepList.vue'
 import StepNavigationButton from './components/StepNavigationButton.vue'
 import browseSnippet from '@/mixins/snippets/browseSnippet'
+import StepMarkdown from '../../../components/snippets/StepMarkdown.vue'
 
 export default {
     components: {
         StepList,
-        StepNavigationButton
+        StepNavigationButton,
+        StepMarkdown
     },
 
     data() {
@@ -116,39 +121,6 @@ export default {
         return {
             title: `${this.snippet.title || 'Untitled snippet'}`
         }
-    },
-
-    computed: {
-        orderdStepAsc() {
-            return _orderBy(this.steps, 'order', 'asc')
-        },
-
-        orderdStepDesc() {
-            return _orderBy(this.steps, 'order', 'desc')
-        },
-
-        firstStep() {
-            return this.orderdStepAsc[0]
-        },
-
-        currentStep() {
-            return this.orderdStepAsc.find(s => s.uuid === this.$route.query.step)
-                || this.firstStep
-        },
-
-        nextStep() {
-            return this.orderdStepAsc.find(s => s.order > this.currentStep.order)
-                || null
-        },
-
-        previousStep() {
-            return this.orderdStepDesc.find(s => s.order < this.currentStep.order)
-                || null
-        },
-
-        currentStepIndex() {
-            return this.orderdStepAsc.findIndex(s => s.uuid === this.currentStep.uuid)
-        },
     },
 
     async asyncData({ app, params }) {
