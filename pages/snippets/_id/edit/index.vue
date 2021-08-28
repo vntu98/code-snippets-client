@@ -99,7 +99,7 @@
                         <step-list :steps="orderdStepAsc" :currentStep="currentStep" />
                     </div>
 
-                    <div class="border-t-2 border-gray-300 pt-6">
+                    <div class="border-t-2 border-gray-300 py-6">
                         <h1 class="text-xl text-gray-600 font-medium mb-6">
                             Publishing
                         </h1>
@@ -108,10 +108,29 @@
                             <template v-if="!lastSaved">
                             No changes saved in this session yet
                             </template>
-                            
+
                             <template v-else>
                                 Last saved at {{ lastSavedFormatted }}
                             </template>
+                        </div>
+
+                        <div class="flex items-baseline">
+                            <input
+                                type="checkbox"
+                                name="public"
+                                id="public"
+                                class="mr-2"
+                                v-model="snippet.is_public"
+                            >
+                            <div>
+                                <label for="public" class="text-gray-600 font-medium">
+                                    Make this snippet public
+                                </label>
+
+                                <div class="text-gray-500 text-sm">
+                                    Don't worry, you can change this later.
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -167,6 +186,16 @@ export default {
         'snippet.title': {
             handler: _debounce(async function (title) {
                 await this.$axios.$patch(`snippets/${this.snippet.uuid}`, { title })
+
+                this.touchLastSaved()
+            }, 500)
+        },
+
+        'snippet.is_public': {
+            handler: _debounce(async function (isPublic) {
+                await this.$axios.$patch(`snippets/${this.snippet.uuid}`, {
+                    is_public: isPublic
+                })
 
                 this.touchLastSaved()
             }, 500)
