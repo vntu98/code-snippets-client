@@ -32,7 +32,9 @@ export default {
 
     methods: {
         async addStep() {
-            let response = await this.$axios.$post(`snippets/${this.snippet.uuid}/steps`)
+            let response = await this.$axios.$post(`snippets/${this.snippet.uuid}/steps`, {
+                [this.position]: this.currentStep.uuid
+            })
 
             this.$emit('added', response.data)
         }
