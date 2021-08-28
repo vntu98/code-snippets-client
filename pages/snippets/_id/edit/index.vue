@@ -99,6 +99,22 @@
                         <step-list :steps="orderdStepAsc" :currentStep="currentStep" />
                     </div>
 
+                    <div class="border-t-2 border-gray-300 pt-6">
+                        <h1 class="text-xl text-gray-600 font-medium mb-6">
+                            Publishing
+                        </h1>
+
+                        <div class="text-gray-500 text-sm mb-6">
+                            <template v-if="!lastSaved">
+                            No changes saved in this session yet
+                            </template>
+                            
+                            <template v-else>
+                                Last saved at {{ lastSavedFormatted }}
+                            </template>
+                        </div>
+                    </div>
+
                     <div class="text-gray-500 text-sm">
                         Use <div class="inline-block px-2 leading-relaxed text-gray-600 rounded bg-gray-400 text-sm">ctrl</div> +
                         <div class="inline-block px-2 leading-relaxed text-gray-600 rounded bg-gray-400 text-sm">shift</div> +
@@ -119,6 +135,7 @@ import StepNavigationButton from '../components/StepNavigationButton.vue'
 import browseSnippet from '@/mixins/snippets/browseSnippet'
 import AddStepButton from './components/AddStepButton.vue'
 import DeleteStepButton from './components/DeleteStepButton.vue'
+import moment from 'moment'
 
 export default {
     components: {
@@ -131,7 +148,8 @@ export default {
     data() {
         return {
             snippet: null,
-            steps: []
+            steps: [],
+            lastSaved: null
         }
     },
 
@@ -149,6 +167,8 @@ export default {
         'snippet.title': {
             handler: _debounce(async function (title) {
                 await this.$axios.$patch(`snippets/${this.snippet.uuid}`, { title })
+
+                this.touchLastSaved()
             }, 500)
         },
 
@@ -160,11 +180,23 @@ export default {
                     title: step.title,
                     body: step.body
                 })
+
+                this.touchLastSaved()
             }, 500)
         }
     },
 
+    computed: {
+        lastSavedFormatted() {
+            return moment(this.lastSaved).format('hh:mm:ss')
+        }
+    },
+
     methods: {
+        touchLastSaved() {
+            this.lastSaved = moment.now()
+        },
+
         goToStep(step) {
             this.$router.push({
                 query: {
