@@ -36,11 +36,11 @@
                             Browse
                         </nuxt-link>
                     </li>
-                    <li>
+                    <!-- <li>
                         <nuxt-link :to="{ name: 'search' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
                             Search
                         </nuxt-link>
-                    </li>
+                    </li> -->
                 </ul>
 
                 <ul class="lg:h-24 lg:flex items-center ml-auto text-right w-full lg:w-auto">
@@ -51,7 +51,15 @@
                             </nuxt-link>
                         </li>
                         <li>
-                            <nuxt-link :to="{ name: 'home' }" class="text-lg text-gray-700 lg:py-8 lg:px-4">
+                            <nuxt-link
+                                :to="{
+                                    name: 'author-id',
+                                    params: {
+                                        id: $auth.user.username
+                                    }
+                                }"
+                                class="text-lg text-gray-700 lg:py-8 lg:px-4"
+                            >
                                 {{ $auth.user.name }}
                             </nuxt-link>
                         </li>
