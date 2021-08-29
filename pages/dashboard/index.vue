@@ -38,6 +38,10 @@ export default {
         }
     },
 
+    middleware: [
+        'auth'
+    ],
+
     methods: {
         async createSnippet() {
             let snippet = await this.$axios.post('snippets')

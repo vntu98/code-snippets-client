@@ -179,6 +179,10 @@ export default {
         }
     },
 
+    middleware: [
+        'auth'
+    ],
+
     watch: {
         'snippet.title': {
             handler: _debounce(async function (title) {
