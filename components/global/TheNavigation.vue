@@ -53,10 +53,7 @@
                         <li>
                             <nuxt-link
                                 :to="{
-                                    name: 'author-id',
-                                    params: {
-                                        id: $auth.user.username
-                                    }
+                                    name: 'account'
                                 }"
                                 class="text-lg text-gray-700 lg:py-8 lg:px-4"
                             >
